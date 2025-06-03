@@ -1,10 +1,11 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+const express = require("express");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 
-const authRoutes = require('./routes/authRoutes');
-const reservationRoutes = require('./routes/reservationRoutes');
-const userRoutes = require('./routes/userRoutes');
+const authRoutes = require("./routes/authRoutes");
+const reservationRoutes = require("./routes/reservationRoutes");
+const userRoutes = require("./routes/userRoutes");
+const roomsRoutes = require("./routes/rooms");
 
 dotenv.config(); // Load environment variables
 
@@ -17,19 +18,20 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/reservations', reservationRoutes);
-app.use('/api', userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/reservations", reservationRoutes);
+app.use("/api", userRoutes);
+app.use("/api/rooms", roomsRoutes);
 
 // Root route
-app.get('/', (req, res) => {
-  res.send('Room Reservation API is running');
+app.get("/", (req, res) => {
+  res.send("Room Reservation API is running");
 });
 
 // Error handling middleware (basic)
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  res.status(500).json({ error: "Something went wrong!" });
 });
 
 const PORT = process.env.PORT || 5000;
