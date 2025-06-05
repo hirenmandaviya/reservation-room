@@ -1,3 +1,4 @@
+const e = require("express");
 const Reservation = require("../models/Reservation");
 const Room = require("../models/Room");
 const sendResponse = require("../utils/response");
@@ -50,7 +51,7 @@ exports.createReservation = async (req, res) => {
     }
 
     // Check for overlapping reservations for the same room
-    const conflict = await Reservation.findOne({
+    const conflict = await Reservation.find({
       room: roomId,
       status: "active", // only consider active reservations
       $or: [
@@ -61,7 +62,7 @@ exports.createReservation = async (req, res) => {
       ],
     });
 
-    if (conflict) {
+    if (conflict.length > 1) {
       return sendResponse(res, {
         statusCode: 400,
         success: false,
@@ -101,7 +102,7 @@ exports.getMyReservations = async (req, res) => {
   try {
     const reservations = await Reservation.find({
       user: req.user._id,
-    }).populate("room");
+    }).populate("room").populate("user",['-password']);
     sendResponse(res, {
       statusCode: 200,
       success: true,

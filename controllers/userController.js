@@ -36,3 +36,25 @@ exports.getUsersData = async (req, res) => {
     },
   });
 };
+
+exports.getAllReservations = async (req, res) => {
+  const { page = 1, limit = 5 } = req.query;
+  
+  const reservations = await Reservation.find({})
+    .skip((page - 1) * limit)
+    .limit(Number(limit))
+
+  const count = await Reservation.countDocuments();
+
+  return sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Users data fetched successfully",
+    data: {
+      reservations,
+      page: Number(page),
+      limit: Number(limit),
+      total: count,
+    },
+  });
+};

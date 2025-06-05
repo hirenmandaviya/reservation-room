@@ -11,6 +11,14 @@ const generateToken = (id) => {
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
   try {
+    //Validating all fields are provided
+    if (!username || !email || !password) {
+      return sendResponse(res, {
+        statusCode: 400,
+        message: "Please provide all required fields (username, email, password)"
+      });
+    }
+
     //Find existing user with email or username
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
